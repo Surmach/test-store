@@ -1,4 +1,7 @@
-import React from 'react'
+import React, {useContext} from 'react'
+import {BasketContext} from '../storeContext'
+import {StoreContext} from '../storeContext'
+import {SearchContext} from '../storeContext'
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -15,8 +18,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import Badge from '@material-ui/core/Badge';
-import {addItem, getItems} from "../actions/indexAction";
-import {connect} from "react-redux";
+import BusketModalForm from "./BusketModalForm";
+
 const useStyles = makeStyles(theme => ({
     list: {
         width: 250,
@@ -76,8 +79,7 @@ const useStyles = makeStyles(theme => ({
     },
   }));
 
-const NavBar = (props) =>{
-    const {basket, item} = props;
+const NavBar = () =>{
 
     const classes = useStyles();
     const [state, setState] = React.useState({
@@ -86,6 +88,9 @@ const NavBar = (props) =>{
       bottom: false,
       right: false,
     });
+    const [basket] = useContext(BasketContext);
+    const [store] = useContext(StoreContext)
+    const [search, setSearch] = useContext(SearchContext)
   
     const toggleDrawer = (side, open) => event => {
       if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -121,9 +126,24 @@ const NavBar = (props) =>{
     );
     //const classes = useStyles();
 
+    const [open, setOpen] = React.useState(false);
+    const [searchValue, setChangeValue] = React.useState()
+    const handleOpen = () =>{
+        setOpen(true);
+    };
+
+    const handleChange = (event) =>{
+      setChangeValue(event.target.value)
+      var findByName = store.filter(el => {
+        return el["phoneName"] === searchValue;
+    })
+      setSearch(findByName)
+    };
+
 
     return(
         <div className={classes.root}>
+            <BusketModalForm hOpen={open}/>
       <AppBar position="static">
         <Toolbar>
           <IconButton
@@ -150,6 +170,8 @@ const NavBar = (props) =>{
               <SearchIcon />
             </div>
             <InputBase
+            onChange={handleChange}
+            value={searchValue}
               placeholder="Search…"
               classes={{
                 root: classes.inputRoot,
@@ -160,7 +182,7 @@ const NavBar = (props) =>{
 
           </div>
             <IconButton aria-label="show 4 new mails" color="inherit">
-                <Badge badgeContent={basket ? basket.count : 1} color="secondary">
+                <Badge badgeContent={basket.length} color="secondary" onClick={handleOpen}>
                     <ShoppingCartIcon />
                 </Badge>
             </IconButton>
@@ -170,18 +192,4 @@ const NavBar = (props) =>{
     )
 };
 
-const mapStateToProps = (store) =>{
-    return{
-        basket: store.getItemReduser.basket,
-        item: store.getItemReduser.item
-    }
-};
-
-const mapDispatchToProps = (dispatch) =>{
-    return{
-        basket: dispatch(addItem()),
-        getItems: dispatch(getItems())
-    }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(NavBar)
+export default NavBar;

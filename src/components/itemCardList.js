@@ -1,33 +1,20 @@
-import React from 'react'
-import {connect} from 'react-redux'
-import {addItem} from './../actions/indexAction'
-import {getItems} from './../actions/indexAction'
+import React, {useContext} from 'react'
+import {StoreContext} from '../storeContext'
+import {SearchContext} from '../storeContext'
 import ItemCard from './itemCard'
 import { Container, Grid } from '@material-ui/core'
 
-const ItemCardList = (props) =>{
-const {item} = props;
-
+const ItemCardList = () =>{
+const [store] = useContext(StoreContext);
+const [search] = useContext(SearchContext);
     return(
         <Container>
             <Grid container justify="center">                
-                    {item.map(it=>(<ItemCard key={it.id} item={it}/>))}                  
+                    {search[0] ? search.map(item=>(<ItemCard key={item.id} store={item}/>)) : 
+                    store.map(item=>(<ItemCard key={item.id} store={item}/>))}
             </Grid>
         </Container>
     )
 };
 
-const mapStateToProps = (store) =>{
-    return{
-      item: store.getItemReduser.item
-    } 
-  };
-  
-  const mapDispatchToProps = (dispatch) =>{
-    return{
-      addItem: dispatch(addItem()),
-      getItems: dispatch(getItems())
-    }
-  };
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(ItemCardList)
+export default ItemCardList;

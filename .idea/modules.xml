@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/mobx-start.iml" filepath="$PROJECT_DIR$/.idea/mobx-start.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/context-api-start.iml" filepath="$PROJECT_DIR$/.idea/context-api-start.iml" />
     </modules>
   </component>
 </project>
